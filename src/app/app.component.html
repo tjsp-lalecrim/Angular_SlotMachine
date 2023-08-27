@@ -1,0 +1,24 @@
+<mat-toolbar [color]="'primary'">
+  <mat-toolbar-row>
+    <span>{{title}}</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-grid-list
+  id="gridList"
+  [cols]="gridColumns"
+  (window:resize)="setGridColumns()"
+>
+  <mat-grid-tile *ngFor="let game of games">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ game.title }}</mat-card-title>
+        <mat-card-subtitle>{{ game.category }}</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image src="../assets/svg-angular.svg" alt="game image" />
+      <mat-card-content>
+        <p>{{ game.description }}</p>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
