@@ -94,6 +94,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/reset.scss",
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.scss"
             ],
