@@ -7,9 +7,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { SlotMachineComponent } from './components/slot-machine/slot-machine.component';
+import { HomeComponent } from './pages/home/home.component';
+import { GameComponent } from './pages/game/game.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SlotMachineComponent, HomeComponent, GameComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

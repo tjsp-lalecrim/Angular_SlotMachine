@@ -1,0 +1,16 @@
+<mat-grid-list
+  id="gridList"
+  [cols]="gridColumns"
+  (window:resize)="setGridColumns()"
+>
+  <mat-grid-tile>
+    <mat-card [routerLink]="['game', 'slot-machine']">
+      <mat-card-header>
+        <mat-card-title>Slot Machine</mat-card-title>
+        <mat-card-subtitle>Cassino</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image src="../assets/svg-angular.svg" alt="game image" />
+      <mat-card-content> Roll the reels and try to win. </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
