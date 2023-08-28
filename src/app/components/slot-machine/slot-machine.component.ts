@@ -23,6 +23,7 @@ export class SlotMachineComponent implements AfterViewInit {
     'lemon',
     'melon',
   ];
+  rolling = false;
 
   ngAfterViewInit(): void {
     this.rollAll();
@@ -64,6 +65,9 @@ export class SlotMachineComponent implements AfterViewInit {
 
   // Roll all reels
   rollAll(): void {
+    if (this.rolling) return;
+    this.rolling = true;
+
     // getting all reels
     const reelsList = this.slots?.nativeElement.querySelectorAll('.reel');
 
@@ -88,7 +92,8 @@ export class SlotMachineComponent implements AfterViewInit {
         console.log('Jackpot!');
       }
 
-      setTimeout(() => this.rollAll(), 3000);
+
+      this.rolling = false;
     });
   }
 }
