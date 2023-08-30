@@ -1,0 +1,66 @@
+$icon_width: 79px;
+$icon_height: 79px;
+$num_icons: 9;
+$bg-color: #673ab7;
+
+h1 {
+    width: 100%;
+    font-weight: 500;
+    text-align: center;
+}
+
+.info {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info span,
+.credits span {
+    font-size: 20px;
+    padding: 10px;
+}
+
+.balance.positive::before {
+    content: '+';
+}
+
+.balance.positive {
+    color: green;
+}
+
+.balance.negative {
+    color: red;
+}
+
+.slots {
+    width: 3.5 * $icon_width;
+    height: 3 * $icon_height;
+    background: $bg-color;
+    padding: 0.3 * $icon_height;
+    display: flex;
+    justify-content: space-between;
+}
+
+.reel {
+    border: 1px solid black;
+    width: $icon_width;
+    height: 3 * $icon_height;
+    background-image: url('../../../assets/slotreel.webp');
+    background-repeat: repeat-y;
+    background-position: 0 0;
+}
+
+.bets {
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.bets button {
+    width: calc(100%/3);
+    font-size: 20px;
+    border-radius: 10px;
+}
