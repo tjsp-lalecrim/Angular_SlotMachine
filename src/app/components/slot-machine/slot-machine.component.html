@@ -3,11 +3,7 @@
 <div class="info">
   <div class="credits">
     <span>Credits: {{ credits }}</span>
-    <span
-      *ngIf="balance !== 0"
-      class="balance"
-      [ngClass]="balance > 0 ? 'positive' : 'negative'"
-    >
+    <span *ngIf="balance !== 0" class="balance" [ngClass]="balance > 0 ? 'positive' : 'negative'">
       {{ balance }}
     </span>
   </div>
@@ -21,28 +17,16 @@
 </div>
 
 <div class="bets">
-  <button
-    mat-raised-button
-    color="primary"
-    [disabled]="rolling || credits < cost * multiplier"
-    (click)="multiplier = 1; chargeCredits(cost * multiplier)"
-  >
+  <button mat-raised-button color="primary" [disabled]="rolling || credits < cost * 1"
+    (click)="multiplier = 1; chargeCredits(cost * multiplier)">
     x1
   </button>
-  <button
-    mat-raised-button
-    color="accent"
-    [disabled]="rolling || credits < cost * multiplier"
-    (click)="multiplier = 2; chargeCredits(cost * multiplier)"
-  >
+  <button mat-raised-button color="accent" [disabled]="rolling || credits < cost * 2"
+    (click)="multiplier = 2; chargeCredits(cost * multiplier)">
     x2
   </button>
-  <button
-    mat-raised-button
-    color="warn"
-    [disabled]="rolling || credits < cost * multiplier"
-    (click)="multiplier = 3; chargeCredits(cost * multiplier)"
-  >
+  <button mat-raised-button color="warn" [disabled]="rolling || credits < cost * 3"
+    (click)="multiplier = 3; chargeCredits(cost * multiplier)">
     x3
   </button>
 </div>
