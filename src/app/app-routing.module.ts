@@ -16,14 +16,13 @@ const routes: Routes = [
       {
         path: 'slot-machine',
         component: SlotMachineComponent,
-      }
-    ]
+      },
+    ],
   },
-
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

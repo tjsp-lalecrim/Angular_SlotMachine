@@ -1,3 +1,19 @@
+<h1>Slot Machine</h1>
+
+<div class="info">
+  <div class="credits">
+    <span>Credits: {{ credits }}</span>
+    <span
+      *ngIf="balance !== 0"
+      class="balance"
+      [ngClass]="balance > 0 ? 'positive' : 'negative'"
+    >
+      {{ balance }}
+    </span>
+  </div>
+  <span>Cost: {{ currCost }}</span>
+</div>
+
 <div #slots class="slots">
   <div class="reel"></div>
   <div class="reel"></div>
@@ -5,7 +21,14 @@
 </div>
 
 <div class="button-row">
-  <button mat-button color="primary" [disabled]="rolling" (click)="rollAll()">Pull</button>
+  <button
+    mat-button
+    color="primary"
+    [disabled]="rolling"
+    (click)="chargeCredits(currCost)"
+  >
+    Pull
+  </button>
 </div>
 
 <!-- <img style="position: fixes; left:0; top: 0; height: 100vh; width: auto;" src="../../../assets/slotreel.webp" alt=""> -->

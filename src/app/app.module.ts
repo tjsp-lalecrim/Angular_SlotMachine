@@ -14,7 +14,12 @@ import { HomeComponent } from './pages/home/home.component';
 import { SlotMachineComponent } from './components/slot-machine/slot-machine.component';
 
 @NgModule({
-  declarations: [AppComponent, SlotMachineComponent, HomeComponent, GameComponent],
+  declarations: [
+    AppComponent,
+    SlotMachineComponent,
+    HomeComponent,
+    GameComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -27,4 +32,4 @@ import { SlotMachineComponent } from './components/slot-machine/slot-machine.com
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

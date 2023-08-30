@@ -2,6 +2,31 @@ $icon_width: 79px;
 $icon_height: 79px;
 $num_icons: 9;
 
+.info {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info span,
+.credits span {
+    font-size: 20px;
+    padding: 10px;
+}
+
+.balance.positive::before {
+    content: '+';
+}
+
+.balance.positive {
+    color: green;
+}
+
+.balance.negative {
+    color: red;
+}
+
 .slots {
     width: 3.5 * $icon_width;
     height: 3 * $icon_height;
@@ -25,7 +50,7 @@ $num_icons: 9;
     margin: 10px 0;
 }
 
-.button {
+button {
     width: 100%;
-    font-size: 30px;
+    font-size: 20px;
 }
