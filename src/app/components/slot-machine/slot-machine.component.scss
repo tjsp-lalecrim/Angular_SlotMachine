@@ -1,6 +1,7 @@
 $icon_width: 79px;
 $icon_height: 79px;
 $num_icons: 9;
+$bg-color: #673ab7;
 
 .info {
     width: 100%;
@@ -30,7 +31,7 @@ $num_icons: 9;
 .slots {
     width: 3.5 * $icon_width;
     height: 3 * $icon_height;
-    border: 1px solid black;
+    background: $bg-color;
     padding: 0.3 * $icon_height;
     display: flex;
     justify-content: space-between;
@@ -45,14 +46,15 @@ $num_icons: 9;
     background-position: 0 0;
 }
 
-.button-row {
+.bets {
     width: 100%;
     margin: 10px 0;
     display: flex;
     gap: 10px;
 }
 
-button {
+.bets button {
     width: calc(100%/3);
     font-size: 20px;
+    border-radius: 10px;
 }
