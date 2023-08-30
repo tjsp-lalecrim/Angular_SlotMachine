@@ -48,9 +48,11 @@ $num_icons: 9;
 .button-row {
     width: 100%;
     margin: 10px 0;
+    display: flex;
+    gap: 10px;
 }
 
 button {
-    width: 100%;
+    width: calc(100%/3);
     font-size: 20px;
 }

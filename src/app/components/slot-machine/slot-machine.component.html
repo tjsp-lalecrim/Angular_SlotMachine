@@ -1,13 +1,8 @@
-<h1>Slot Machine</h1>
-
+<h1>Slot Machine x{{lines}}</h1>
 <div class="info">
   <div class="credits">
     <span>Credits: {{ credits }}</span>
-    <span
-      *ngIf="balance !== 0"
-      class="balance"
-      [ngClass]="balance > 0 ? 'positive' : 'negative'"
-    >
+    <span *ngIf="balance !== 0" class="balance" [ngClass]="balance > 0 ? 'positive' : 'negative'">
       {{ balance }}
     </span>
   </div>
@@ -21,14 +16,16 @@
 </div>
 
 <div class="button-row">
-  <button
-    mat-button
-    color="primary"
-    [disabled]="rolling"
-    (click)="chargeCredits(currCost)"
-  >
-    Pull
+  <button mat-raised-button color="primary" [disabled]="rolling || credits < currCost"
+    (click)="lines = 1; chargeCredits(currCost)">
+    x1
+  </button>
+  <button mat-raised-button color="accent" [disabled]="rolling || credits < currCost *2"
+    (click)="lines =2; chargeCredits(currCost * 2)">
+    x2
+  </button>
+  <button mat-raised-button color="warn" [disabled]="rolling || credits < currCost *3"
+    (click)="lines = 3; chargeCredits(currCost *3)">
+    x3
   </button>
 </div>
-
-<!-- <img style="position: fixes; left:0; top: 0; height: 100vh; width: auto;" src="../../../assets/slotreel.webp" alt=""> -->

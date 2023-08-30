@@ -13,21 +13,22 @@ export class SlotMachineComponent {
   timePerIcon = 100;
   indexes = [0, 0, 0];
   prizes = {
-    'banana': 60, // banana
-    'seven': 700, // seven
-    'cherry': 50, // cherry,
-    'plum': 70, // plum,
-    'orange': 80, // orange,
-    'bell': 150, // bell,
-    'bar': 250, // bar,
-    'lemon': 90, // lemon,
-    'melon': 100, // melon
+    'banana': 60,
+    'seven': 700,
+    'cherry': 50,
+    'plum': 70,
+    'orange': 80,
+    'bell': 150,
+    'bar': 250,
+    'lemon': 90,
+    'melon': 100,
   };
   cherryIndex = 2;
   rolling = false;
   credits = 100;
   balance = 0;
   currCost = 5;
+  lines = 1;
 
   // Roll a reel
   roll(reel: HTMLDivElement, offset = 0): Promise<number> {
@@ -40,14 +41,13 @@ export class SlotMachineComponent {
     const backgroundPositionY = parseFloat(style.backgroundPositionY);
     const targetBackgroundPositionY =
       backgroundPositionY + delta * this.iconHeight;
+
     // Normalize target background position
     // const normTargetBackgroundPositionY =
     //   targetBackgroundPositionY % (this.numIcons * this.iconHeight);
 
     return new Promise((resolve) => {
-      // extra value for delta
-      const extraFruits = 8;
-      // calculate time to solve
+      const extraFruits = this.numIcons; // add extra value for delta
       const timeToResolveMs = extraFruits + delta * this.timePerIcon;
 
       // setting styles
@@ -65,8 +65,9 @@ export class SlotMachineComponent {
   }
 
   chargeCredits(cost: number): void {
-    if (this.rolling) return;
+    if (this.rolling || this.credits < cost) return;
 
+    this.lines = cost / this.currCost;
     this.rolling = true;
     this.balance = -cost;
 
@@ -98,15 +99,60 @@ export class SlotMachineComponent {
       });
   }
 
-  checkResult(result: number[]) {
-    const prizeIndex = result[0];
-    const twoCherries = result[0] == result[1] && result[0] == this.cherryIndex;
-    const threeInRow = result.every(i => i === prizeIndex);
+  checkIndexes(indexes: number[]) {
+    const firstValue = indexes[0];
+    const line = [...indexes];
 
-    if (threeInRow)
-      this.balance = Object.values(this.prizes)[prizeIndex] ?? 0;
-    else if (twoCherries)
-      this.balance = 20;
+    // two cherries
+    if (line[0] == line[1] &&
+      line[0] == this.cherryIndex)
+      return this.currCost * 3;
+
+    // three in row
+    if (indexes.every(i => i == firstValue))
+      return Object.values(this.prizes)[firstValue] ?? 0;
+
+    return 0;
+  }
+
+  fixIndexValue(i: number): number {
+    if (i < 0) return this.numIcons - 1;
+    if (i > this.numIcons - 1) return 0;
+    return i;
+  }
+
+  checkResult(indexes: number[]): void {
+    // check center
+    const centerLine = [...indexes];
+    this.balance += this.checkIndexes(centerLine);
+
+    // check top and bottom
+    if (this.lines >= 2) {
+      const topLine = indexes.map(i => this.fixIndexValue(i - 1));
+      const bottomLine = indexes.map(i => this.fixIndexValue(i + 1));
+
+      console.log('Top Line', topLine);
+      console.log('Bottom Line', bottomLine);
+
+      this.balance += this.checkIndexes(topLine);
+      this.balance += this.checkIndexes(bottomLine);
+    }
+
+    // check diagonal
+    if (this.lines >= 3) {
+      let topDiagonalLine =
+        [indexes[0] - 1, indexes[1], indexes[2] + 1]
+          .map(i => this.fixIndexValue(i))
+      let bottomDiagonalLine =
+        [indexes[0] + 1, indexes[1], indexes[2] - 1]
+          .map(i => this.fixIndexValue(i));
+
+      console.log('Top Diagonal Line', topDiagonalLine);
+      console.log('Bottom Diagonal Line', bottomDiagonalLine);
+
+      this.balance += this.checkIndexes(topDiagonalLine);
+      this.balance += this.checkIndexes(bottomDiagonalLine);
+    }
 
     // give credits
     let interval = setInterval(() => {
