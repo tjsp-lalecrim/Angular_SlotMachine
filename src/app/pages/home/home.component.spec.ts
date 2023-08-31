@@ -4,11 +4,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 
 import { HomeComponent } from './home.component';
-import { By } from '@angular/platform-browser';
 
 @Directive({
   selector: '[routerLink]',
-  host: { '(click)': 'onClick()' }
+  host: { '(click)': 'onClick()' },
 })
 export class RouterLinkDirectiveStub {
   @Input('routerLink') linkParams: any;
@@ -25,10 +24,7 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        MatGridListModule,
-        MatCardModule,
-      ],
+      imports: [MatGridListModule, MatCardModule],
       declarations: [HomeComponent, RouterLinkDirectiveStub],
     }).compileComponents();
 

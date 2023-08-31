@@ -32,11 +32,11 @@ export class SlotMachineComponent {
 
   constructor() {
     this.cherryIndex = Object.keys(this.prizes).findIndex(
-      (key) => key === 'cherry'
+      (key) => key === 'cherry',
     );
   }
 
-  roll(reel: HTMLDivElement, offset = 0): Promise<number> {
+  roll(reel: any, offset = 0): Promise<number> {
     // delta represents the amount of fruits will be animated
     const delta =
       (offset + 2) * this.numIcons + Math.round(Math.random() * this.numIcons);
@@ -104,11 +104,10 @@ export class SlotMachineComponent {
 
     // three in row
     if (indexes.every((i) => i == firstValue))
-      return Object.values(this.prizes)[firstValue] ?? 0;
+      return Object.values(this.prizes)[firstValue];
 
     // two cherries
-    if (line[0] == line[1] && line[0] == this.cherryIndex)
-      return this.cost * 3;
+    if (line[0] == line[1] && line[0] == this.cherryIndex) return this.cost * 3;
 
     return 0;
   }

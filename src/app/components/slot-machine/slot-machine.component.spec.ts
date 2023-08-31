@@ -1,4 +1,10 @@
-import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  flush,
+  tick,
+} from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { SlotMachineComponent } from './slot-machine.component';
@@ -10,7 +16,6 @@ describe('SlotMachineComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SlotMachineComponent],
-
     }).compileComponents();
 
     fixture = TestBed.createComponent(SlotMachineComponent);
@@ -86,9 +91,8 @@ describe('SlotMachineComponent', () => {
     expect(component.addCredits).toHaveBeenCalledTimes(3);
   }));
 
-
   it('should return prize when checkIndexes is called', () => {
-    let prizes = Object.values(component.prizes);
+    const prizes = Object.values(component.prizes);
 
     expect(component.checkIndexes([0, 0, 0])).toEqual(prizes[0]); // banana
     expect(component.checkIndexes([1, 1, 1])).toEqual(prizes[1]); // seven
@@ -118,15 +122,14 @@ describe('SlotMachineComponent', () => {
     expect(component.rolling).toBeFalse();
   }));
 
-
-  it('should discount cost from credits when chargeCredits is called', fakeAsync(() => {
+  it('should discount cost from credits and roll all reels when chargeCredits is called', fakeAsync(() => {
     spyOn(fixture.componentInstance, 'rollAll');
 
-    component.credits = 100;
+    component.credits = 150;
     component.chargeCredits(25);
     tick(2600); // (cost + last interval loop) * 50ms
 
-    expect(component.credits).toEqual(75);
+    expect(component.credits).toEqual(125);
     expect(component.rolling).toBeTrue();
     expect(component.rollAll).toHaveBeenCalled();
   }));
