@@ -36,7 +36,7 @@ export class SlotMachineComponent {
     );
   }
 
-  roll(reel: HTMLDivElement, offset = 0): Promise<number> {
+  roll(reel: any, offset = 0): Promise<number> {
     // delta represents the amount of fruits will be animated
     const delta =
       (offset + 2) * this.numIcons + Math.round(Math.random() * this.numIcons);
@@ -94,19 +94,20 @@ export class SlotMachineComponent {
 
       this.balance++;
       this.credits--;
+      return;
     }, 100);
   }
 
-  checkIndexes(indexes: number[]) {
+  checkIndexes(indexes: number[]): number {
     const firstValue = indexes[0];
     const line = [...indexes];
 
-    // two cherries
-    if (line[0] == line[1] && line[0] == this.cherryIndex) return this.cost * 3;
-
     // three in row
     if (indexes.every((i) => i == firstValue))
-      return Object.values(this.prizes)[firstValue] ?? 0;
+      return Object.values(this.prizes)[firstValue];
+
+    // two cherries
+    if (line[0] == line[1] && line[0] == this.cherryIndex) return this.cost * 3;
 
     return 0;
   }
@@ -117,7 +118,7 @@ export class SlotMachineComponent {
     return i;
   }
 
-  addCredits() {
+  addCredits(): void {
     // add 1 from balance to credits every 50ms
     const interval = setInterval(() => {
       if (this.balance === 0) {
@@ -136,7 +137,7 @@ export class SlotMachineComponent {
     const centerLine = [...indexes];
     this.balance += this.checkIndexes(centerLine);
 
-    // check top and bottom if multiplier greater or equal than 2
+    // check top and bottom
     if (this.multiplier >= 2) {
       const topLine = indexes.map((i) => this.fixIndexValue(i - 1));
       const bottomLine = indexes.map((i) => this.fixIndexValue(i + 1));
@@ -145,7 +146,7 @@ export class SlotMachineComponent {
       this.balance += this.checkIndexes(bottomLine);
     }
 
-    // check diagonal if multiplier equals 3
+    // check diagonal
     if (this.multiplier >= 3) {
       const topDiagonalLine = [indexes[0] - 1, indexes[1], indexes[2] + 1].map(
         (i) => this.fixIndexValue(i),
