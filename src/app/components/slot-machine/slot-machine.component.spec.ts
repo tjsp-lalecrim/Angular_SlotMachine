@@ -104,6 +104,8 @@ describe('SlotMachineComponent', () => {
   });
 
   it('should add balance to credits when addCredits is called', fakeAsync(() => {
+    spyOn(fixture.componentInstance, 'rollAll');
+
     component.credits = 100;
     component.balance = 50;
     component.rolling = true;
@@ -114,5 +116,30 @@ describe('SlotMachineComponent', () => {
     expect(component.credits).toEqual(150);
     expect(component.balance).toEqual(0);
     expect(component.rolling).toBeFalse();
+  }));
+
+
+  it('should discount cost from credits when chargeCredits is called', fakeAsync(() => {
+    spyOn(fixture.componentInstance, 'rollAll');
+
+    component.credits = 100;
+    component.chargeCredits(25);
+    tick(2600); // (cost + last interval loop) * 50ms
+
+    expect(component.credits).toEqual(75);
+    expect(component.rolling).toBeTrue();
+    expect(component.rollAll).toHaveBeenCalled();
+  }));
+
+  it('should NOT discount cost from credits when chargeCredits is called and cost is greater than credits', fakeAsync(() => {
+    spyOn(fixture.componentInstance, 'rollAll');
+
+    component.credits = 100;
+    component.chargeCredits(125);
+    flush();
+
+    expect(component.credits).toEqual(100);
+    expect(component.rolling).toBeFalse();
+    expect(component.rollAll).not.toHaveBeenCalled();
   }));
 });

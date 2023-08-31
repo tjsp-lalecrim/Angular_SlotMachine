@@ -94,6 +94,7 @@ export class SlotMachineComponent {
 
       this.balance++;
       this.credits--;
+      return;
     }, 100);
   }
 
