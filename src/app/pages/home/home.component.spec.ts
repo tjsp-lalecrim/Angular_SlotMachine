@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 
 import { HomeComponent } from './home.component';
+import { By } from '@angular/platform-browser';
 
 @Directive({
   selector: '[routerLink]',
@@ -38,5 +39,28 @@ describe('HomeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should recalculate grid columns when window size is changed', () => {
+    window.innerWidth = 1201;
+    component.setGridColumns();
+    fixture.detectChanges();
+    expect(component.gridColumns).toEqual(3);
+
+    window.innerWidth = 1200;
+    component.setGridColumns();
+    fixture.detectChanges();
+    expect(component.gridColumns).toEqual(2);
+
+    window.innerWidth = 801;
+    component.setGridColumns();
+    fixture.detectChanges();
+    expect(component.gridColumns).toEqual(2);
+
+    window.innerWidth = 800;
+    component.setGridColumns();
+    fixture.detectChanges();
+
+    expect(component.gridColumns).toEqual(1);
   });
 });
