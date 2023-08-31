@@ -18,7 +18,7 @@ describe('GameComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create page', () => {
     expect(component).toBeTruthy();
   });
 });

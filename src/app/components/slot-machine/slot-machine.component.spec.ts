@@ -44,6 +44,30 @@ describe('SlotMachineComponent', () => {
     expect(component.chargeCredits).toHaveBeenCalledWith(component.cost * 3);
   });
 
+  it('should discount balance from credits and roll all reels when chargeCredits is called', fakeAsync(() => {
+    spyOn(fixture.componentInstance, 'rollAll');
+
+    component.credits = 150;
+    component.chargeCredits(25);
+    tick(2600); // (cost + last interval cycle) * 50ms
+
+    expect(component.credits).toEqual(125);
+    expect(component.rolling).toBeTrue();
+    expect(component.rollAll).toHaveBeenCalled();
+  }));
+
+  it('should NOT discount balance from credits when chargeCredits is called and cost is greater than credits', fakeAsync(() => {
+    spyOn(fixture.componentInstance, 'rollAll');
+
+    component.credits = 100;
+    component.chargeCredits(125);
+    flush();
+
+    expect(component.credits).toEqual(100);
+    expect(component.rolling).toBeFalse();
+    expect(component.rollAll).not.toHaveBeenCalled();
+  }));
+
   it('should roll each reel and check result when rollAll is called', fakeAsync(() => {
     spyOn(fixture.componentInstance, 'checkResult');
     spyOn(fixture.componentInstance, 'roll');
@@ -120,29 +144,5 @@ describe('SlotMachineComponent', () => {
     expect(component.credits).toEqual(150);
     expect(component.balance).toEqual(0);
     expect(component.rolling).toBeFalse();
-  }));
-
-  it('should discount cost from credits and roll all reels when chargeCredits is called', fakeAsync(() => {
-    spyOn(fixture.componentInstance, 'rollAll');
-
-    component.credits = 150;
-    component.chargeCredits(25);
-    tick(2600); // (cost + last interval loop) * 50ms
-
-    expect(component.credits).toEqual(125);
-    expect(component.rolling).toBeTrue();
-    expect(component.rollAll).toHaveBeenCalled();
-  }));
-
-  it('should NOT discount cost from credits when chargeCredits is called and cost is greater than credits', fakeAsync(() => {
-    spyOn(fixture.componentInstance, 'rollAll');
-
-    component.credits = 100;
-    component.chargeCredits(125);
-    flush();
-
-    expect(component.credits).toEqual(100);
-    expect(component.rolling).toBeFalse();
-    expect(component.rollAll).not.toHaveBeenCalled();
   }));
 });
