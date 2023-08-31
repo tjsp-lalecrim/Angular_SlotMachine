@@ -32,7 +32,7 @@ export class SlotMachineComponent {
 
   constructor() {
     this.cherryIndex = Object.keys(this.prizes).findIndex(
-      (key) => key === 'cherry',
+      (key) => key === 'cherry'
     );
   }
 
@@ -160,6 +160,6 @@ export class SlotMachineComponent {
       this.balance += this.checkIndexes(bottomDiagonalLine);
     }
 
-    this.addCredits();
+    if (this.balance > 0) this.addCredits();
   }
 }
