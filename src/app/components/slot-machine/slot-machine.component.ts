@@ -97,16 +97,17 @@ export class SlotMachineComponent {
     }, 100);
   }
 
-  checkIndexes(indexes: number[]) {
+  checkIndexes(indexes: number[]): number {
     const firstValue = indexes[0];
     const line = [...indexes];
-
-    // two cherries
-    if (line[0] == line[1] && line[0] == this.cherryIndex) return this.cost * 3;
 
     // three in row
     if (indexes.every((i) => i == firstValue))
       return Object.values(this.prizes)[firstValue] ?? 0;
+
+    // two cherries
+    if (line[0] == line[1] && line[0] == this.cherryIndex)
+      return this.cost * 3;
 
     return 0;
   }
@@ -136,7 +137,7 @@ export class SlotMachineComponent {
     const centerLine = [...indexes];
     this.balance += this.checkIndexes(centerLine);
 
-    // check top and bottom if multiplier greater or equal than 2
+    // check top and bottom
     if (this.multiplier >= 2) {
       const topLine = indexes.map((i) => this.fixIndexValue(i - 1));
       const bottomLine = indexes.map((i) => this.fixIndexValue(i + 1));
@@ -145,7 +146,7 @@ export class SlotMachineComponent {
       this.balance += this.checkIndexes(bottomLine);
     }
 
-    // check diagonal if multiplier equals 3
+    // check diagonal
     if (this.multiplier >= 3) {
       const topDiagonalLine = [indexes[0] - 1, indexes[1], indexes[2] + 1].map(
         (i) => this.fixIndexValue(i),
