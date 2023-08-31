@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { SlotMachineComponent } from './slot-machine.component';
-import { By } from '@angular/platform-browser';
 
 describe('SlotMachineComponent', () => {
   let component: SlotMachineComponent;
@@ -82,6 +82,8 @@ describe('SlotMachineComponent', () => {
     expect(component.checkIndexes).toHaveBeenCalledWith([8, 4, 0]); // top diagonal
     expect(component.checkIndexes).toHaveBeenCalledWith([0, 4, 8]); // bottom diagonal
     expect(component.checkIndexes).toHaveBeenCalledTimes(9); // +5 times
+
+    expect(component.addCredits).toHaveBeenCalledTimes(3);
   }));
 
 
@@ -100,4 +102,17 @@ describe('SlotMachineComponent', () => {
     expect(component.checkIndexes([2, 2, 0])).toEqual(component.cost * 3); // two cherries
     expect(component.checkIndexes([7, 8, 2])).toEqual(0); // no prize
   });
+
+  it('should add balance to credits when addCredits is called', fakeAsync(() => {
+    component.credits = 100;
+    component.balance = 50;
+    component.rolling = true;
+
+    component.addCredits();
+    tick((component.balance + 1) * 50); // (balance + last interval cycle) * 50ms
+
+    expect(component.credits).toEqual(150);
+    expect(component.balance).toEqual(0);
+    expect(component.rolling).toBeFalse();
+  }));
 });

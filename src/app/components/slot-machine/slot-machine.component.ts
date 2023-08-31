@@ -118,7 +118,7 @@ export class SlotMachineComponent {
     return i;
   }
 
-  addCredits() {
+  addCredits(): void {
     // add 1 from balance to credits every 50ms
     const interval = setInterval(() => {
       if (this.balance === 0) {
@@ -161,6 +161,6 @@ export class SlotMachineComponent {
       this.balance += this.checkIndexes(bottomDiagonalLine);
     }
 
-    if (this.balance > 0) this.addCredits();
+    this.addCredits();
   }
 }
