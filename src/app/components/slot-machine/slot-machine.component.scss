@@ -22,15 +22,15 @@ h1 {
     padding: 10px;
 }
 
-.balance.positive::before {
+.payout.positive::before {
     content: '+';
 }
 
-.balance.positive {
+.payout.positive {
     color: green;
 }
 
-.balance.negative {
+.payout.negative {
     color: red;
 }
 
@@ -47,7 +47,7 @@ h1 {
     border: 1px solid black;
     width: $icon_width;
     height: 3 * $icon_height;
-    background-image: url('../../../assets/slotreel.webp');
+    background-image: url('../../../assets/slotreel.png');
     background-repeat: repeat-y;
     background-position: 0 0;
 }

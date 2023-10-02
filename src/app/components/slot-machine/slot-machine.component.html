@@ -1,14 +1,12 @@
-<h1>Slot Machine</h1>
-
 <div class="info">
   <div class="credits">
     <span>Credits: {{ credits }}</span>
     <span
-      *ngIf="balance !== 0"
-      class="balance"
-      [ngClass]="balance > 0 ? 'positive' : 'negative'"
+      *ngIf="payout !== 0"
+      class="payout"
+      [ngClass]="payout > 0 ? 'positive' : 'negative'"
     >
-      {{ balance }}
+      {{ payout }}
     </span>
   </div>
   <span class="cost">Cost: {{ cost * multiplier }}</span>

@@ -26,7 +26,7 @@ export class SlotMachineComponent {
   cherryIndex: number;
   rolling = false;
   credits = 100;
-  balance = 0;
+  payout = 0;
   cost = 5;
   multiplier = 1;
 
@@ -84,15 +84,15 @@ export class SlotMachineComponent {
     if (this.rolling || this.credits < cost) return;
 
     this.rolling = true;
-    this.balance = -cost;
+    this.payout = -cost;
 
     const interval = setInterval(() => {
-      if (this.balance === 0) {
+      if (this.payout === 0) {
         clearInterval(interval);
         return this.rollAll();
       }
 
-      this.balance++;
+      this.payout++;
       this.credits--;
       return;
     }, 100);
@@ -119,14 +119,14 @@ export class SlotMachineComponent {
   }
 
   addCredits(): void {
-    // add 1 from balance to credits every 50ms
+    // add 1 from payout to credits every 50ms
     const interval = setInterval(() => {
-      if (this.balance === 0) {
+      if (this.payout === 0) {
         clearInterval(interval);
         return (this.rolling = false);
       }
 
-      this.balance--;
+      this.payout--;
       this.credits++;
       return;
     }, 50);
@@ -135,15 +135,15 @@ export class SlotMachineComponent {
   checkResult(indexes: number[]): void {
     // check center
     const centerLine = [...indexes];
-    this.balance += this.checkIndexes(centerLine);
+    this.payout += this.checkIndexes(centerLine);
 
     // check top and bottom
     if (this.multiplier >= 2) {
       const topLine = indexes.map((i) => this.fixIndexValue(i - 1));
       const bottomLine = indexes.map((i) => this.fixIndexValue(i + 1));
 
-      this.balance += this.checkIndexes(topLine);
-      this.balance += this.checkIndexes(bottomLine);
+      this.payout += this.checkIndexes(topLine);
+      this.payout += this.checkIndexes(bottomLine);
     }
 
     // check diagonal
@@ -157,8 +157,8 @@ export class SlotMachineComponent {
         indexes[2] - 1,
       ].map((i) => this.fixIndexValue(i));
 
-      this.balance += this.checkIndexes(topDiagonalLine);
-      this.balance += this.checkIndexes(bottomDiagonalLine);
+      this.payout += this.checkIndexes(topDiagonalLine);
+      this.payout += this.checkIndexes(bottomDiagonalLine);
     }
 
     this.addCredits();
