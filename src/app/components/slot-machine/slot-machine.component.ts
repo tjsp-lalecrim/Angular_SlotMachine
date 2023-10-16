@@ -146,7 +146,6 @@ export class SlotMachineComponent {
         return (this.rolling = false);
       }
 
-      //this.payout--;
       this.creditService.setPayout(this.payout - 1);
       this.creditService.setCredits(this.credits + 1);
       return;
