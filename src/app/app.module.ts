@@ -12,11 +12,7 @@ import { GameComponent } from './pages/game/game.component';
 import { SlotMachineComponent } from './components/slot-machine/slot-machine.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    GameComponent,
-    SlotMachineComponent,
-  ],
+  declarations: [AppComponent, GameComponent, SlotMachineComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

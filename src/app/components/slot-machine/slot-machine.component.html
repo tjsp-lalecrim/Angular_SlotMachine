@@ -1,15 +1,8 @@
 <div class="info">
-  <div class="credits">
-    <span>Credits: {{ credits }}</span>
-    <span
-      *ngIf="payout !== 0"
-      class="payout"
-      [ngClass]="payout > 0 ? 'positive' : 'negative'"
-    >
-      {{ payout }}
-    </span>
-  </div>
-  <span class="cost">Cost: {{ cost * multiplier }}</span>
+  <span class="payout" [ngClass]="payout > 0 ? 'positive' : 'negative'">
+    Payout: {{ payout }}
+  </span>
+  <span class="cost"> Cost: {{ cost * multiplier }} </span>
 </div>
 
 <div #slots class="slots">
