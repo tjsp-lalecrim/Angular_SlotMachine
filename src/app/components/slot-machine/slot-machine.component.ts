@@ -1,4 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CreditService } from 'src/app/credit.service';
 
 @Component({
   selector: 'app-slot-machine',
@@ -7,11 +9,22 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 })
 export class SlotMachineComponent {
   @ViewChild('slots') slots?: ElementRef;
+
+  private creditsSubscription!: Subscription;
+  private payoutSubscription!: Subscription;
+
   iconWidth = 79;
   iconHeight = 79;
   numIcons = 9;
   timePerIcon = 100;
   indexes = [0, 0, 0];
+  cherryIndex = 0;
+  rolling = false;
+  credits = 0;
+  payout = 0;
+  cost = 5;
+  multiplier = 1;
+
   prizes = {
     banana: 60,
     seven: 700,
@@ -23,17 +36,23 @@ export class SlotMachineComponent {
     lemon: 90,
     melon: 100,
   };
-  cherryIndex: number;
-  rolling = false;
-  credits = 100;
-  payout = 0;
-  cost = 5;
-  multiplier = 1;
 
-  constructor() {
+  constructor(private creditService: CreditService) {
     this.cherryIndex = Object.keys(this.prizes).findIndex(
       (key) => key === 'cherry',
     );
+
+    this.creditsSubscription = this.creditService.getCredits().subscribe({
+      next: (value) => (this.credits = value),
+      error: (error) => console.log(error),
+      complete: () => console.log('complete'),
+    });
+
+    this.payoutSubscription = this.creditService.getPayout().subscribe({
+      next: (value) => (this.payout = value),
+      error: (error) => console.log(error),
+      complete: () => console.log('complete'),
+    });
   }
 
   roll(reel: any, offset = 0): Promise<number> {
@@ -84,7 +103,7 @@ export class SlotMachineComponent {
     if (this.rolling || this.credits < cost) return;
 
     this.rolling = true;
-    this.payout = -cost;
+    this.creditService.setPayout(-cost);
 
     const interval = setInterval(() => {
       if (this.payout === 0) {
@@ -92,8 +111,9 @@ export class SlotMachineComponent {
         return this.rollAll();
       }
 
-      this.payout++;
-      this.credits--;
+      this.creditService.setPayout(this.payout + 1);
+      this.creditService.setCredits(this.credits - 1);
+
       return;
     }, 100);
   }
@@ -126,24 +146,26 @@ export class SlotMachineComponent {
         return (this.rolling = false);
       }
 
-      this.payout--;
-      this.credits++;
+      this.creditService.setPayout(this.payout - 1);
+      this.creditService.setCredits(this.credits + 1);
       return;
     }, 50);
   }
 
   checkResult(indexes: number[]): void {
+    let prize = 0;
+
     // check center
     const centerLine = [...indexes];
-    this.payout += this.checkIndexes(centerLine);
+    prize += this.checkIndexes(centerLine);
 
     // check top and bottom
     if (this.multiplier >= 2) {
       const topLine = indexes.map((i) => this.fixIndexValue(i - 1));
       const bottomLine = indexes.map((i) => this.fixIndexValue(i + 1));
 
-      this.payout += this.checkIndexes(topLine);
-      this.payout += this.checkIndexes(bottomLine);
+      prize += this.checkIndexes(topLine);
+      prize += this.checkIndexes(bottomLine);
     }
 
     // check diagonal
@@ -157,10 +179,11 @@ export class SlotMachineComponent {
         indexes[2] - 1,
       ].map((i) => this.fixIndexValue(i));
 
-      this.payout += this.checkIndexes(topDiagonalLine);
-      this.payout += this.checkIndexes(bottomDiagonalLine);
+      prize += this.checkIndexes(topDiagonalLine);
+      prize += this.checkIndexes(bottomDiagonalLine);
     }
 
+    this.creditService.setPayout(prize);
     this.addCredits();
   }
 }
