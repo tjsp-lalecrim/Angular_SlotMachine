@@ -34,12 +34,14 @@ h1 {
 }
 
 .slots {
+    position: relative;
     width: 3.5 * $icon_width;
     height: 3 * $icon_height;
     background: $bg-color;
     padding: 0.3 * $icon_height;
     display: flex;
     justify-content: space-between;
+    z-index: -1;
 }
 
 .reel {
@@ -49,6 +51,58 @@ h1 {
     background-image: url('../../../assets/slotreel.png');
     background-repeat: repeat-y;
     background-position: 0 0;
+    z-index: 1;
+}
+
+
+.line-1,
+.line-2,
+.line-3 {
+    position: absolute;
+    left: 0%;
+    width: 100%;
+    z-index: 0;
+    border-radius: 10px;
+}
+
+.line-1,
+.line-3 {
+    border: 3px solid #ffd740;
+}
+
+.line-1 {
+    top: 25%;
+}
+
+.line-2 {
+    border: 3px solid white;
+    top: 50%
+}
+
+.line-3 {
+    top: 75%
+}
+
+.diagonal-1,
+.diagonal-2 {
+    border: 3px solid #f44336;
+    border-radius: 10px;
+    position: absolute;
+    left: 0%;
+    width: 120%;
+    z-index: 0;
+}
+
+.diagonal-1 {
+    transform: rotate(36deg);
+    transform-origin: 0% 0%;
+    margin-left: 5px;
+}
+
+.diagonal-2 {
+    top: 90%;
+    transform: rotate(-36deg);
+    transform-origin: 0% 0%;
 }
 
 .bets {
