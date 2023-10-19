@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
+
 import { CreditService } from 'src/app/credit.service';
 
 @Component({
@@ -55,7 +56,7 @@ export class SlotMachineComponent {
     });
   }
 
-  roll(reel: any, offset = 0): Promise<number> {
+  roll(reel: HTMLElement, offset = 0): Promise<number> {
     // delta represents the amount of fruits will be animated
     const delta =
       (offset + 2) * this.numIcons + Math.round(Math.random() * this.numIcons);
