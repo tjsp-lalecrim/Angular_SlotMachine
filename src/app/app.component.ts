@@ -16,8 +16,6 @@ export class AppComponent {
   constructor(private creditService: CreditService) {
     this.subscription = this.creditService.getCredits().subscribe({
       next: (value) => (this.credits = value),
-      error: (error) => console.log(error),
-      complete: () => console.log('complete'),
     });
   }
 }

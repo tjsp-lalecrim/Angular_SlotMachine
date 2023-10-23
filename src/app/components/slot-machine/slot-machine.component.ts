@@ -28,14 +28,10 @@ export class SlotMachineComponent {
   constructor(private creditService: CreditService) {
     this.creditsSubscription = this.creditService.getCredits().subscribe({
       next: (value) => (this.credits = value),
-      error: (error) => console.log(error),
-      complete: () => console.log('complete'),
     });
 
     this.payoutSubscription = this.creditService.getPayout().subscribe({
       next: (value) => (this.payout = value),
-      error: (error) => console.log(error),
-      complete: () => console.log('complete'),
     });
   }
 
