@@ -11,34 +11,22 @@
   <div *ngIf="multiplier >= 2" class="line-3"></div>
   <div *ngIf="multiplier >= 3" class="diagonal-1"></div>
   <div *ngIf="multiplier >= 3" class="diagonal-2"></div>
-  <div class="reel"></div>
-  <div class="reel"></div>
-  <div class="reel"></div>
+  <div class="reel reel-1"></div>
+  <div class="reel reel-2"></div>
+  <div class="reel reel-3"></div>
 </div>
 
 <div class="bets">
-  <button
-    mat-raised-button
-    color="primary"
-    [disabled]="rolling || credits < cost * 1"
-    (click)="multiplier = 1; chargeCredits(cost * multiplier)"
-  >
+  <button mat-raised-button color="primary" [disabled]="rolling || credits < cost * 1"
+    (click)="multiplier = 1; chargeCredits(cost * multiplier)">
     x1
   </button>
-  <button
-    mat-raised-button
-    color="accent"
-    [disabled]="rolling || credits < cost * 2"
-    (click)="multiplier = 2; chargeCredits(cost * multiplier)"
-  >
+  <button mat-raised-button color="accent" [disabled]="rolling || credits < cost * 2"
+    (click)="multiplier = 2; chargeCredits(cost * multiplier)">
     x2
   </button>
-  <button
-    mat-raised-button
-    color="warn"
-    [disabled]="rolling || credits < cost * 3"
-    (click)="multiplier = 3; chargeCredits(cost * multiplier)"
-  >
+  <button mat-raised-button color="warn" [disabled]="rolling || credits < cost * 3"
+    (click)="multiplier = 3; chargeCredits(cost * multiplier)">
     x3
   </button>
 </div>

@@ -26,22 +26,8 @@ export class SlotMachineComponent {
   cost = 5;
   multiplier = 1;
 
-  prizes = {
-    banana: 60,
-    seven: 700,
-    cherry: 50,
-    plum: 70,
-    orange: 80,
-    bell: 150,
-    bar: 250,
-    lemon: 90,
-    melon: 100,
-  };
-
   constructor(private creditService: CreditService) {
-    this.cherryIndex = Object.keys(this.prizes).findIndex(
-      (key) => key === 'cherry',
-    );
+    this.cherryIndex = Object.keys(prizes).findIndex((key) => key === 'cherry');
 
     this.creditsSubscription = this.creditService.getCredits().subscribe({
       next: (value) => (this.credits = value),
@@ -122,10 +108,14 @@ export class SlotMachineComponent {
   checkIndexes(indexes: number[]): number {
     const firstValue = indexes[0];
     const line = [...indexes];
+    const reelsValues = [reelValues[0][line[0]], reelValues[1][line[1]], reelValues[2][line[2]]];
+
+    console.log(line);
+    console.log(reelsValues);
 
     // three in row
     if (indexes.every((i) => i == firstValue))
-      return Object.values(this.prizes)[firstValue];
+      return Object.values(prizes)[firstValue];
 
     // two cherries
     if (line[0] == line[1] && line[0] == this.cherryIndex) return this.cost * 3;
@@ -188,3 +178,51 @@ export class SlotMachineComponent {
     this.addCredits();
   }
 }
+
+const reelValues = [
+  [
+    'banana',
+    'seven',
+    'cherry',
+    'plum',
+    'orange',
+    'bell',
+    'bar',
+    'lemon',
+    'melon',
+  ],
+  [
+    'plum',
+    'banana',
+    'seven',
+    'cherry',
+    'orange',
+    'bell',
+    'bar',
+    'lemon',
+    'melon',
+  ],
+  [
+    'banana',
+    'seven',
+    'cherry',
+    'plum',
+    'orange',
+    'bell',
+    'bar',
+    'lemon',
+    'melon',
+  ],
+];
+
+const prizes = {
+  banana: 60,
+  seven: 700,
+  cherry: 50,
+  plum: 70,
+  orange: 80,
+  bell: 150,
+  bar: 250,
+  lemon: 90,
+  melon: 100,
+};
