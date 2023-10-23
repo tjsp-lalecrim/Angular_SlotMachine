@@ -108,8 +108,8 @@ export class SlotMachineComponent {
     const isCherry = values[0] === 'cherry';
 
     // three in row
-    if (values.every(string => string === values[0])) {
-      const prizeKey = Object.keys(prizes).findIndex(k => k === values[0]);
+    if (values.every((string) => string === values[0])) {
+      const prizeKey = Object.keys(prizes).findIndex((k) => k === values[0]);
       return Object.values(prizes)[prizeKey];
     }
 

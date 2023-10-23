@@ -117,15 +117,15 @@ describe('SlotMachineComponent', () => {
 
   it('should return prize when checkIndexes is called', () => {
     // mock reels result
-    const bananas = reels.map(reel => reel.findIndex(r => r === 'banana'));
-    const sevens = reels.map(reel => reel.findIndex(r => r === 'seven'));
-    const cherries = reels.map(reel => reel.findIndex(r => r === 'cherry'));
-    const plums = reels.map(reel => reel.findIndex(r => r === 'plum'));
-    const oranges = reels.map(reel => reel.findIndex(r => r === 'orange'));
-    const bells = reels.map(reel => reel.findIndex(r => r === 'bell'));
-    const bars = reels.map(reel => reel.findIndex(r => r === 'bar'));
-    const lemons = reels.map(reel => reel.findIndex(r => r === 'lemon'));
-    const melons = reels.map(reel => reel.findIndex(r => r === 'melon'));
+    const bananas = reels.map((reel) => reel.findIndex((r) => r === 'banana'));
+    const sevens = reels.map((reel) => reel.findIndex((r) => r === 'seven'));
+    const cherries = reels.map((reel) => reel.findIndex((r) => r === 'cherry'));
+    const plums = reels.map((reel) => reel.findIndex((r) => r === 'plum'));
+    const oranges = reels.map((reel) => reel.findIndex((r) => r === 'orange'));
+    const bells = reels.map((reel) => reel.findIndex((r) => r === 'bell'));
+    const bars = reels.map((reel) => reel.findIndex((r) => r === 'bar'));
+    const lemons = reels.map((reel) => reel.findIndex((r) => r === 'lemon'));
+    const melons = reels.map((reel) => reel.findIndex((r) => r === 'melon'));
 
     expect(component.checkIndexes(bananas)).toEqual(prizes['banana']); // banana
     expect(component.checkIndexes(sevens)).toEqual(prizes['seven']); // seven
