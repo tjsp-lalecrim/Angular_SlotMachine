@@ -7,7 +7,7 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { SlotMachineComponent } from './slot-machine.component';
+import { SlotMachineComponent, prizes, reels } from './slot-machine.component';
 
 describe('SlotMachineComponent', () => {
   let component: SlotMachineComponent;
@@ -116,18 +116,27 @@ describe('SlotMachineComponent', () => {
   }));
 
   it('should return prize when checkIndexes is called', () => {
-    const prizes = Object.values(component.prizes);
+    // mock reels result
+    const bananas = reels.map(reel => reel.findIndex(r => r === 'banana'));
+    const sevens = reels.map(reel => reel.findIndex(r => r === 'seven'));
+    const cherries = reels.map(reel => reel.findIndex(r => r === 'cherry'));
+    const plums = reels.map(reel => reel.findIndex(r => r === 'plum'));
+    const oranges = reels.map(reel => reel.findIndex(r => r === 'orange'));
+    const bells = reels.map(reel => reel.findIndex(r => r === 'bell'));
+    const bars = reels.map(reel => reel.findIndex(r => r === 'bar'));
+    const lemons = reels.map(reel => reel.findIndex(r => r === 'lemon'));
+    const melons = reels.map(reel => reel.findIndex(r => r === 'melon'));
 
-    expect(component.checkIndexes([0, 0, 0])).toEqual(prizes[0]); // banana
-    expect(component.checkIndexes([1, 1, 1])).toEqual(prizes[1]); // seven
-    expect(component.checkIndexes([2, 2, 2])).toEqual(prizes[2]); // cherry
-    expect(component.checkIndexes([3, 3, 3])).toEqual(prizes[3]); // plum
-    expect(component.checkIndexes([4, 4, 4])).toEqual(prizes[4]); // orange
-    expect(component.checkIndexes([5, 5, 5])).toEqual(prizes[5]); // bell
-    expect(component.checkIndexes([6, 6, 6])).toEqual(prizes[6]); // bar
-    expect(component.checkIndexes([7, 7, 7])).toEqual(prizes[7]); // lemon
-    expect(component.checkIndexes([8, 8, 8])).toEqual(prizes[8]); // melon
-    expect(component.checkIndexes([2, 2, 0])).toEqual(component.cost * 3); // two cherries
+    expect(component.checkIndexes(bananas)).toEqual(prizes['banana']); // banana
+    expect(component.checkIndexes(sevens)).toEqual(prizes['seven']); // seven
+    expect(component.checkIndexes(cherries)).toEqual(prizes['cherry']); // cherry
+    expect(component.checkIndexes(plums)).toEqual(prizes['plum']); // plum
+    expect(component.checkIndexes(oranges)).toEqual(prizes['orange']); // orange
+    expect(component.checkIndexes(bells)).toEqual(prizes['bell']); // bell
+    expect(component.checkIndexes(bars)).toEqual(prizes['bar']); // bar
+    expect(component.checkIndexes(lemons)).toEqual(prizes['lemon']); // lemon
+    expect(component.checkIndexes(melons)).toEqual(prizes['melon']); // melon
+    expect(component.checkIndexes([2, 3, 0])).toEqual(component.cost * 3); // two cherries
     expect(component.checkIndexes([7, 8, 2])).toEqual(0); // no prize
   });
 

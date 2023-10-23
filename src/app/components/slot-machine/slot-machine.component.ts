@@ -19,7 +19,6 @@ export class SlotMachineComponent {
   numIcons = 9;
   timePerIcon = 100;
   indexes = [0, 0, 0];
-  cherryIndex = 0;
   rolling = false;
   credits = 0;
   payout = 0;
@@ -27,8 +26,6 @@ export class SlotMachineComponent {
   multiplier = 1;
 
   constructor(private creditService: CreditService) {
-    this.cherryIndex = Object.keys(prizes).findIndex((key) => key === 'cherry');
-
     this.creditsSubscription = this.creditService.getCredits().subscribe({
       next: (value) => (this.credits = value),
       error: (error) => console.log(error),
@@ -107,26 +104,29 @@ export class SlotMachineComponent {
 
   checkIndexes(indexes: number[]): number {
     const firstValue = indexes[0];
-    const line = [...indexes];
-    const reelsValues = [reelValues[0][line[0]], reelValues[1][line[1]], reelValues[2][line[2]]];
 
-    console.log(line);
-    console.log(reelsValues);
+    // convert indexes in values
+    const values = this.mapIndexes(indexes);
+    const isCherry = values[0] === 'cherry';
 
     // three in row
-    if (indexes.every((i) => i == firstValue))
+    if (values.every(string => string === values[0]))
       return Object.values(prizes)[firstValue];
 
     // two cherries
-    if (line[0] == line[1] && line[0] == this.cherryIndex) return this.cost * 3;
+    if (values[0] === values[1] && isCherry) return this.cost * 3;
 
     return 0;
   }
 
-  fixIndexValue(i: number): number {
+  private fixIndex(i: number): number {
     if (i < 0) return this.numIcons - 1;
     if (i > this.numIcons - 1) return 0;
     return i;
+  }
+
+  private mapIndexes(indexes: number[]) {
+    return reels.map((array, i) => array[indexes[i]]);
   }
 
   addCredits(): void {
@@ -152,8 +152,8 @@ export class SlotMachineComponent {
 
     // check top and bottom
     if (this.multiplier >= 2) {
-      const topLine = indexes.map((i) => this.fixIndexValue(i - 1));
-      const bottomLine = indexes.map((i) => this.fixIndexValue(i + 1));
+      const topLine = indexes.map((i) => this.fixIndex(i - 1));
+      const bottomLine = indexes.map((i) => this.fixIndex(i + 1));
 
       prize += this.checkIndexes(topLine);
       prize += this.checkIndexes(bottomLine);
@@ -162,13 +162,13 @@ export class SlotMachineComponent {
     // check diagonal
     if (this.multiplier >= 3) {
       const topDiagonalLine = [indexes[0] - 1, indexes[1], indexes[2] + 1].map(
-        (i) => this.fixIndexValue(i),
+        (i) => this.fixIndex(i),
       );
       const bottomDiagonalLine = [
         indexes[0] + 1,
         indexes[1],
         indexes[2] - 1,
-      ].map((i) => this.fixIndexValue(i));
+      ].map((i) => this.fixIndex(i));
 
       prize += this.checkIndexes(topDiagonalLine);
       prize += this.checkIndexes(bottomDiagonalLine);
@@ -179,7 +179,7 @@ export class SlotMachineComponent {
   }
 }
 
-const reelValues = [
+export const reels = [
   [
     'banana',
     'seven',
@@ -215,14 +215,14 @@ const reelValues = [
   ],
 ];
 
-const prizes = {
-  banana: 60,
-  seven: 700,
-  cherry: 50,
-  plum: 70,
-  orange: 80,
-  bell: 150,
-  bar: 250,
-  lemon: 90,
-  melon: 100,
+export const prizes = {
+  'banana': 60,
+  'seven': 700,
+  'cherry': 50,
+  'plum': 70,
+  'orange': 80,
+  'bell': 150,
+  'bar': 250,
+  'lemon': 90,
+  'melon': 100,
 };
