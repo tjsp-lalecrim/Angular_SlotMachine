@@ -103,15 +103,15 @@ export class SlotMachineComponent {
   }
 
   checkIndexes(indexes: number[]): number {
-    const firstValue = indexes[0];
-
-    // convert indexes in values
+    // map indexes to reels values
     const values = this.mapIndexes(indexes);
     const isCherry = values[0] === 'cherry';
 
     // three in row
-    if (values.every(string => string === values[0]))
-      return Object.values(prizes)[firstValue];
+    if (values.every(string => string === values[0])) {
+      const prizeKey = Object.keys(prizes).findIndex(k => k === values[0]);
+      return Object.values(prizes)[prizeKey];
+    }
 
     // two cherries
     if (values[0] === values[1] && isCherry) return this.cost * 3;
@@ -216,13 +216,13 @@ export const reels = [
 ];
 
 export const prizes = {
-  'banana': 60,
-  'seven': 700,
-  'cherry': 50,
-  'plum': 70,
-  'orange': 80,
-  'bell': 150,
-  'bar': 250,
-  'lemon': 90,
-  'melon': 100,
+  seven: 700,
+  banana: 60,
+  cherry: 50,
+  plum: 70,
+  orange: 80,
+  bell: 150,
+  bar: 250,
+  lemon: 90,
+  melon: 100,
 };
