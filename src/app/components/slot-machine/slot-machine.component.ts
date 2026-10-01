@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { CreditService } from 'src/app/credit.service';
@@ -8,11 +8,14 @@ import { CreditService } from 'src/app/credit.service';
   templateUrl: './slot-machine.component.html',
   styleUrls: ['./slot-machine.component.scss'],
 })
-export class SlotMachineComponent {
-  @ViewChild('slots') slots?: ElementRef;
+export class SlotMachineComponent implements OnDestroy {
+  @ViewChild('slots') slots?: ElementRef<HTMLDivElement>;
 
   private creditsSubscription!: Subscription;
   private payoutSubscription!: Subscription;
+  private destroyed = false;
+  private intervals = new Set<ReturnType<typeof setInterval>>();
+  private pendingRolls = new Map<ReturnType<typeof setTimeout>, () => void>();
 
   iconWidth = 79;
   iconHeight = 79;
@@ -40,23 +43,24 @@ export class SlotMachineComponent {
 
   constructor(private creditService: CreditService) {
     this.cherryIndex = Object.keys(this.prizes).findIndex(
-      (key) => key === 'cherry',
+      key => key === 'cherry'
     );
 
     this.creditsSubscription = this.creditService.getCredits().subscribe({
-      next: (value) => (this.credits = value),
-      error: (error) => console.log(error),
+      next: value => (this.credits = value),
+      error: error => console.log(error),
       complete: () => console.log('complete'),
     });
 
     this.payoutSubscription = this.creditService.getPayout().subscribe({
-      next: (value) => (this.payout = value),
-      error: (error) => console.log(error),
+      next: value => (this.payout = value),
+      error: error => console.log(error),
       complete: () => console.log('complete'),
     });
   }
 
   roll(reel: HTMLElement, offset = 0): Promise<number> {
+    if (this.destroyed) return Promise.resolve(0);
     // delta represents the amount of fruits will be animated
     const delta =
       (offset + 2) * this.numIcons + Math.round(Math.random() * this.numIcons);
@@ -67,33 +71,38 @@ export class SlotMachineComponent {
     const targetBackgroundPositionY =
       backgroundPositionY + delta * this.iconHeight;
 
-    return new Promise((resolve) => {
-      const extraFruits = this.numIcons; // add extra value for delta
-      const timeToResolveMs = extraFruits + delta * this.timePerIcon;
+    return new Promise(resolve => {
+      const animationPaddingMs = 9;
+      const timeToResolveMs = animationPaddingMs + delta * this.timePerIcon;
 
       // setting styles
       reel.style.transition = `background-position-y ${timeToResolveMs}ms cubic-bezier(.45, .05, .58, 1.09)`;
       reel.style.backgroundPositionY = `${targetBackgroundPositionY}px`;
 
       // delay delta resolve
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
+        this.pendingRolls.delete(timeout);
         resolve(delta % this.numIcons);
       }, timeToResolveMs);
+      this.pendingRolls.set(timeout, () => resolve(0));
     });
   }
 
   rollAll(): void {
-    const reelsList = this.slots?.nativeElement.querySelectorAll('.reel');
+    if (this.destroyed || !this.slots) return;
+    const reelsList =
+      this.slots.nativeElement.querySelectorAll<HTMLDivElement>('.reel');
 
     // Getting all promisses and map to the indexes
     Promise.all(
-      [...reelsList].map((reel: HTMLDivElement, i: number) =>
-        this.roll(reel, i),
-      ),
-    ).then((deltas) => {
+      Array.from(reelsList).map((reel: HTMLDivElement, i: number) =>
+        this.roll(reel, i)
+      )
+    ).then(deltas => {
+      if (this.destroyed) return;
       deltas.forEach(
         (delta: number, i: number) =>
-          (this.indexes[i] = (this.indexes[i] + delta) % this.numIcons),
+          (this.indexes[i] = (this.indexes[i] + delta) % this.numIcons)
       );
 
       this.checkResult(this.indexes);
@@ -101,7 +110,7 @@ export class SlotMachineComponent {
   }
 
   chargeCredits(cost: number): void {
-    if (this.rolling || this.credits < cost) return;
+    if (this.destroyed || this.rolling || this.credits < cost) return;
 
     this.rolling = true;
     this.creditService.setPayout(-cost);
@@ -109,6 +118,7 @@ export class SlotMachineComponent {
     const interval = setInterval(() => {
       if (this.payout === 0) {
         clearInterval(interval);
+        this.intervals.delete(interval);
         return this.rollAll();
       }
 
@@ -117,6 +127,7 @@ export class SlotMachineComponent {
 
       return;
     }, 100);
+    this.intervals.add(interval);
   }
 
   checkIndexes(indexes: number[]): number {
@@ -124,10 +135,10 @@ export class SlotMachineComponent {
     const line = [...indexes];
 
     // three in row
-    if (indexes.every((i) => i == firstValue))
+    if (indexes.every(i => i == firstValue))
       return Object.values(this.prizes)[firstValue];
 
-    // two cherries
+    // Two cherries on the first two reels, read from left to right.
     if (line[0] == line[1] && line[0] == this.cherryIndex) return this.cost * 3;
 
     return 0;
@@ -140,10 +151,12 @@ export class SlotMachineComponent {
   }
 
   addCredits(): void {
+    if (this.destroyed) return;
     // add 1 from payout to credits every 50ms
     const interval = setInterval(() => {
       if (this.payout === 0) {
         clearInterval(interval);
+        this.intervals.delete(interval);
         return (this.rolling = false);
       }
 
@@ -151,9 +164,11 @@ export class SlotMachineComponent {
       this.creditService.setCredits(this.credits + 1);
       return;
     }, 50);
+    this.intervals.add(interval);
   }
 
   checkResult(indexes: number[]): void {
+    if (this.destroyed) return;
     let prize = 0;
 
     // check center
@@ -162,8 +177,8 @@ export class SlotMachineComponent {
 
     // check top and bottom
     if (this.multiplier >= 2) {
-      const topLine = indexes.map((i) => this.fixIndexValue(i - 1));
-      const bottomLine = indexes.map((i) => this.fixIndexValue(i + 1));
+      const topLine = indexes.map(i => this.fixIndexValue(i - 1));
+      const bottomLine = indexes.map(i => this.fixIndexValue(i + 1));
 
       prize += this.checkIndexes(topLine);
       prize += this.checkIndexes(bottomLine);
@@ -172,13 +187,13 @@ export class SlotMachineComponent {
     // check diagonal
     if (this.multiplier >= 3) {
       const topDiagonalLine = [indexes[0] - 1, indexes[1], indexes[2] + 1].map(
-        (i) => this.fixIndexValue(i),
+        i => this.fixIndexValue(i)
       );
       const bottomDiagonalLine = [
         indexes[0] + 1,
         indexes[1],
         indexes[2] - 1,
-      ].map((i) => this.fixIndexValue(i));
+      ].map(i => this.fixIndexValue(i));
 
       prize += this.checkIndexes(topDiagonalLine);
       prize += this.checkIndexes(bottomDiagonalLine);
@@ -186,5 +201,22 @@ export class SlotMachineComponent {
 
     this.creditService.setPayout(prize);
     this.addCredits();
+  }
+
+  ngOnDestroy(): void {
+    if (this.destroyed) return;
+    this.destroyed = true;
+    this.creditsSubscription.unsubscribe();
+    this.payoutSubscription.unsubscribe();
+    this.intervals.forEach(interval => clearInterval(interval));
+    this.intervals.clear();
+    this.pendingRolls.forEach((cancel, timeout) => {
+      clearTimeout(timeout);
+      cancel();
+    });
+    this.pendingRolls.clear();
+    // Finish any remaining debit or prize before discarding its animation.
+    this.creditService.setCredits(this.credits + this.payout);
+    this.creditService.setPayout(0);
   }
 }
